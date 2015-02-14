@@ -1,0 +1,67 @@
+Module: BabyMonitor
+Controller: Feeds
+Action: index
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+    <thread>
+        <tr>
+            <th>#</th>
+            <th><?php echo $this->translate('Date/Time'); ?></th>
+            <th><?php echo $this->translate('Amount'); ?></th>
+            <th><?php echo $this->translate('Temperature'); ?></th>
+            <th><?php echo $this->translate('Notes'); ?></th>
+            <th></th>
+        </tr>
+    </thread>
+    <tbody>
+        <?php if (count($this->resultset)) : ?>
+        <?php foreach ($resultset as $record) : ?>
+        <tr>
+            <td><a href="<?php print $this->url(
+                'feeds/manage', array(
+                    'id' => $record->feedId
+                )); ?>" title="Update Feed"><?php print $record->feedId; ?></a>
+            </td>
+            <td>
+                <?php echo $this->dateFormat(
+                   new \DateTime(
+                       $record->feedDate . ' ' . $record->feedTime
+                   ),
+                    IntlDateFormatter::MEDIUM,
+                    IntlDateFormatter::MEDIUM
+                ); ?>
+            </td>
+            <td>
+                <?php echo $record->feedAmount; ?>
+            </td>
+            <td>
+                <?php echo $this->numberFormat(
+                    $record->feedTemperature,
+                    NumberFormatter::DECIMAL,
+                    NumberFormatter::TYPE_DEFAULT
+                    ); ?>
+            </td>
+            <td>
+                <?php if (strlen($record->feedNotes) > 100) : ?>
+                <?php echo substr($record->feedNotes, 0, 100) . '...'; ?>
+                <?php else : ?>
+                <?php echo $record->feedNotes; ?>
+                <?php endif; ?>
+            </td>
+            <td style="text-align: center;">
+                <a href="<?php print $this->url(
+                    'feeds/delete',
+                    array('id' => $record-feedId
+                    )); ?>" title="Delete Feed"><?php print $this->translate('delete'); ?></a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="6">
+                    <?php print 'No Records Available'; ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
